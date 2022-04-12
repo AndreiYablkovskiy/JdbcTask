@@ -2,6 +2,7 @@ package com.academy.model.dao.impl;
 
 import com.academy.model.ConnectionSource;
 import com.academy.model.dao.AirplaneDao;
+import com.academy.model.entity.Aircompany;
 import com.academy.model.entity.Airplane;
 import com.academy.model.entity.Route;
 
@@ -31,6 +32,7 @@ public class AirplaneDaoImpl implements AirplaneDao {
     @Override
     public List<Airplane> getAll() {
         List<Airplane> airplanes = new ArrayList<>();
+        List<Route> airplaneRoutesLis = new ArrayList<>();
         String sql = "select * from aircompany_db.airplane";
 
         try (Connection connection = ConnectionSource.initConnection()) {
@@ -41,6 +43,8 @@ public class AirplaneDaoImpl implements AirplaneDao {
                 airplane.setId(result.getInt(1));
                 airplane.setName(result.getString(2));
                 airplane.setAircompanyId(result.getInt(3));
+                // airplaneRoutesLis.add()
+                airplane.setRoutes(airplaneRoutesLis);
                 airplanes.add(airplane);
             }
             return airplanes;
@@ -99,13 +103,13 @@ public class AirplaneDaoImpl implements AirplaneDao {
     }
 
     @Override
-    public List<Airplane> getByAircompanyId(Integer aircompanyId) {
+    public List<Airplane> getByAircompanyId(Aircompany aircompany) {
         List<Airplane> airplanes = new ArrayList<>();
         String sql = "SELECT * FROM aircompany_db.airplane where aircompany_id=?";
 
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, aircompanyId);
+            statement.setInt(1, aircompany.getId());
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 Airplane airplane = new Airplane();
@@ -122,46 +126,9 @@ public class AirplaneDaoImpl implements AirplaneDao {
     }
 
     @Override
-    public List<Integer> getRoutesId(Airplane airplane) {
-        List<Integer> routesId = new ArrayList<>();
-        String sql = "SELECT routes_id FROM aircompany_db.airplane_route where airplane_id=?";
-
-        try (Connection connection = ConnectionSource.initConnection()) {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, airplane.getId());
-            ResultSet result = statement.executeQuery();
-            while (result.next()) {
-                routesId.add(result.getInt(1));
-            }
-            return routesId;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public List<Route> getAirplaneRoutes(List<Integer> routesId) {
-        List<Route> routesList = new ArrayList<>();
-        String sql = "SELECT * FROM aircompany_db.route where id=?";
-
-        try (Connection connection = ConnectionSource.initConnection()) {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            for (Integer id : routesId) {
-                statement.setInt(1, id);
-                ResultSet result = statement.executeQuery();
-                while (result.next()) {
-                    Route route = new Route();
-                    route.setId(result.getInt(1));
-                    route.setDepartureId(result.getInt(2));
-                    route.setArrivalId(result.getInt(3));
-                    routesList.add(route);
-                }
-            }
-            return routesList;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public List<Airplane> getByRouteId(Route route) {
+        List<Airplane> airplanes = new ArrayList<>();
+        String sql = "";
+        return airplanes;
     }
 }

@@ -96,16 +96,16 @@ public class RoleDaoImpl implements RoleDao {
     @Override
     public Role getByName(String name) {
         String sql = "SELECT * FROM aircompany_db.role where name=?";
-        Role role = new Role();
+        Role roleToReturn = new Role();
 
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, name);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                role.setId(result.getInt(1));
-                role.setName(result.getString(2));
-                return role;
+                roleToReturn.setId(result.getInt(1));
+                roleToReturn.setName(result.getString(2));
+                return roleToReturn;
             }
         } catch (SQLException e) {
             e.printStackTrace();

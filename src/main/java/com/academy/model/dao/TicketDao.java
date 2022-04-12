@@ -1,24 +1,13 @@
 package com.academy.model.dao;
 
-import com.academy.model.entity.Route;
 import com.academy.model.entity.Ticket;
 
 import java.util.List;
 
-public interface TicketDao {
-    void create(Ticket ticket);
+public interface TicketDao extends GeneralDao<Ticket> {
+    List<Ticket> getByPassportData(String passportData);
 
-    List<Ticket> getAll();
+    List<Ticket> getByRouteId(Integer routeId);
 
-    Ticket getById(Integer id);
-
-    void update(Ticket ticket);
-
-    void delete(Ticket ticket);
-
-    String getPassportData(Ticket ticket);
-
-    Integer getRouteId(Ticket ticket);
-
-    Integer getOrderId(Ticket ticket);
+    Ticket getByOrderId(Integer orderId);
 }

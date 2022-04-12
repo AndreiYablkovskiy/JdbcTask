@@ -99,17 +99,22 @@ public class RouteDaoImpl implements RouteDao {
     }
 
     @Override
-    public Integer getDeparture_id(Route route) {
-        String sql = "SELECT departure_id FROM aircompany_db.route where id=?";
-        Integer departureId;
+    public List<Route> getByDepartureId(Integer departureId) {
+        List<Route> routes = new ArrayList<>();
+        String sql = "SELECT * FROM aircompany_db.route where departure_id=?";
+
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, route.getId());
+            statement.setInt(1, departureId);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                departureId = result.getInt(1);
-                return departureId;
+                Route route = new Route();
+                route.setId(result.getInt(1));
+                route.setDepartureId(result.getInt(2));
+                route.setArrivalId(result.getInt(3));
+                routes.add(route);
             }
+            return routes;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -117,17 +122,22 @@ public class RouteDaoImpl implements RouteDao {
     }
 
     @Override
-    public Integer getArrival_id(Route route) {
-        String sql = "SELECT arrival_id FROM aircompany_db.route where id=?";
-        Integer arrivalId;
+    public List<Route> getByArrivalId(Integer arrivalId) {
+        List<Route> routes = new ArrayList<>();
+        String sql = "SELECT * FROM aircompany_db.route where arrival_id=?";
+
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, route.getId());
+            statement.setInt(1, arrivalId);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                arrivalId = result.getInt(1);
-                return arrivalId;
+                Route route = new Route();
+                route.setId(result.getInt(1));
+                route.setDepartureId(result.getInt(2));
+                route.setArrivalId(result.getInt(3));
+                routes.add(route);
             }
+            return routes;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -135,46 +145,9 @@ public class RouteDaoImpl implements RouteDao {
     }
 
     @Override
-    public List<Integer> getAirplanesId(Route route) {
-        List<Integer> airplanesId = new ArrayList<>();
-        String sql = "SELECT airplane_id FROM aircompany_db.airplane_route where routes_id=?";
-
-        try (Connection connection = ConnectionSource.initConnection()) {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, route.getId());
-            ResultSet result = statement.executeQuery();
-            while (result.next()) {
-                airplanesId.add(result.getInt(1));
-            }
-            return airplanesId;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public List<Airplane> getRouteAirplanes(List<Integer> airplanesId) {
-        List<Airplane> airplanesList = new ArrayList<>();
-        String sql = "SELECT * FROM aircompany_db.airplane where id=?";
-
-        try (Connection connection = ConnectionSource.initConnection()) {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            for (Integer id : airplanesId) {
-                statement.setInt(1, id);
-                ResultSet result = statement.executeQuery();
-                while (result.next()) {
-                    Airplane airplane = new Airplane();
-                    airplane.setId(result.getInt(1));
-                    airplane.setName(result.getString(2));
-                    airplane.setAircompanyId(result.getInt(3));
-                    airplanesList.add(airplane);
-                }
-            }
-            return airplanesList;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public List<Route> getByAirplaneId(Airplane airplane) {
+        List<Route> routes = new ArrayList<>();
+        String sql = "";
+        return routes;
     }
 }

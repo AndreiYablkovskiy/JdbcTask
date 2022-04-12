@@ -5,22 +5,10 @@ import com.academy.model.entity.Route;
 
 import java.util.List;
 
-public interface RouteDao {
-    void create(Route route);
+public interface RouteDao extends GeneralDao<Route> {
+    List<Route> getByDepartureId(Integer departureId);
 
-    List<Route> getAll();
+    List<Route> getByArrivalId(Integer arrivalId);
 
-    Route getById(Integer id);
-
-    void update(Route route);
-
-    void delete(Route route);
-
-    Integer getDeparture_id(Route route);
-
-    Integer getArrival_id(Route route);
-
-    List<Integer> getAirplanesId(Route route);
-
-    List<Airplane> getRouteAirplanes(List<Integer> airplanesId);
+    List<Route> getByAirplaneId(Airplane airplane);
 }

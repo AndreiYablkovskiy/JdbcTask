@@ -100,16 +100,22 @@ public class TicketDaoImpl implements TicketDao {
     }
 
     @Override
-    public String getPassportData(Ticket ticket) {
-        String sql = "SELECT passport_data FROM aircompany_db.ticket where id=?";
-        String passportData;
+    public List<Ticket> getByPassportData(String passportData) {
+        List<Ticket> tickets = new ArrayList<>();
+        String sql = "SELECT * FROM aircompany_db.ticket where passport_data=?";
+
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, ticket.getId());
+            statement.setString(1, passportData);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                passportData = result.getString(1);
-                return passportData;
+                Ticket newTicket = new Ticket();
+                newTicket.setId(result.getInt(1));
+                newTicket.setRouteId(result.getInt(2));
+                newTicket.setOrderId(result.getInt(3));
+                newTicket.setPassportData(result.getString(4));
+                tickets.add(newTicket);
+                return tickets;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -118,16 +124,22 @@ public class TicketDaoImpl implements TicketDao {
     }
 
     @Override
-    public Integer getRouteId(Ticket ticket) {
-        String sql = "SELECT route_id FROM aircompany_db.ticket where id=?";
-        Integer routeId;
+    public List<Ticket> getByRouteId(Integer routeId) {
+        List<Ticket> tickets = new ArrayList<>();
+        String sql = "SELECT * FROM aircompany_db.ticket where route_id=?";
+
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, ticket.getId());
+            statement.setInt(1, routeId);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                routeId = result.getInt(1);
-                return routeId;
+                Ticket newTicket = new Ticket();
+                newTicket.setId(result.getInt(1));
+                newTicket.setRouteId(result.getInt(2));
+                newTicket.setOrderId(result.getInt(3));
+                newTicket.setPassportData(result.getString(4));
+                tickets.add(newTicket);
+                return tickets;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -136,16 +148,20 @@ public class TicketDaoImpl implements TicketDao {
     }
 
     @Override
-    public Integer getOrderId(Ticket ticket) {
-        String sql = "SELECT order_id FROM aircompany_db.ticket where id=?";
-        Integer orderId;
+    public Ticket getByOrderId(Integer orderId) {
+        Ticket newTicket = new Ticket();
+        String sql = "SELECT * FROM aircompany_db.ticket where order_id=?";
+
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, ticket.getId());
+            statement.setInt(1, orderId);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                orderId = result.getInt(1);
-                return orderId;
+                newTicket.setId(result.getInt(1));
+                newTicket.setRouteId(result.getInt(2));
+                newTicket.setOrderId(result.getInt(3));
+                newTicket.setPassportData(result.getString(4));
+                return newTicket;
             }
         } catch (SQLException e) {
             e.printStackTrace();
