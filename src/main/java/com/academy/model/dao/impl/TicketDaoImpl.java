@@ -2,6 +2,8 @@ package com.academy.model.dao.impl;
 
 import com.academy.model.ConnectionSource;
 import com.academy.model.dao.TicketDao;
+import com.academy.model.entity.Order;
+import com.academy.model.entity.Route;
 import com.academy.model.entity.Ticket;
 
 import java.sql.Connection;
@@ -124,13 +126,13 @@ public class TicketDaoImpl implements TicketDao {
     }
 
     @Override
-    public List<Ticket> getByRouteId(Integer routeId) {
+    public List<Ticket> getByRouteId(Route route) {
         List<Ticket> tickets = new ArrayList<>();
         String sql = "SELECT * FROM aircompany_db.ticket where route_id=?";
 
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, routeId);
+            statement.setInt(1, route.getId());
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 Ticket newTicket = new Ticket();
@@ -148,13 +150,13 @@ public class TicketDaoImpl implements TicketDao {
     }
 
     @Override
-    public Ticket getByOrderId(Integer orderId) {
+    public Ticket getByOrderId(Order order) {
         Ticket newTicket = new Ticket();
         String sql = "SELECT * FROM aircompany_db.ticket where order_id=?";
 
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, orderId);
+            statement.setInt(1, order.getId());
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 newTicket.setId(result.getInt(1));

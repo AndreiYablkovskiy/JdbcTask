@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AircompanyDaoImpl implements AircompanyDao {
-
     @Override
     public void create(Aircompany aircompany) {
         String sql = "insert into aircompany_db.aircompany (name) value(?)";

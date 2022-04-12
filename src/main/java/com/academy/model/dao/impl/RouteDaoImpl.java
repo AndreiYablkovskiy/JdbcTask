@@ -36,10 +36,26 @@ public class RouteDaoImpl implements RouteDao {
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
+                List<Airplane> routeAirplanesList = new ArrayList<>();
                 Route route = new Route();
                 route.setId(result.getInt(1));
                 route.setDepartureId(result.getInt(2));
                 route.setArrivalId(result.getInt(3));
+                route.setAirplanes(routeAirplanesList);
+
+                String routeSql = "SELECT airplane.id, airplane.name, airplane.aircompany_id " +
+                        "FROM airplane inner join airplane_route " +
+                        "on airplane_route.airplane_id = airplane.id " +
+                        "WHERE routes_id=" + result.getInt(1);
+                PreparedStatement routeStatement = connection.prepareStatement(routeSql);
+                ResultSet airplaneResult = routeStatement.executeQuery();
+                while (airplaneResult.next()) {
+                    Airplane airplane = new Airplane();
+                    airplane.setId(airplaneResult.getInt(1));
+                    airplane.setName(airplaneResult.getString(2));
+                    airplane.setAircompanyId(airplaneResult.getInt(3));
+                    routeAirplanesList.add(airplane);
+                }
                 routes.add(route);
             }
             return routes;
@@ -59,9 +75,25 @@ public class RouteDaoImpl implements RouteDao {
             statement.setInt(1, id);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
+                List<Airplane> routeAirplanesList = new ArrayList<>();
                 route.setId(result.getInt(1));
                 route.setDepartureId(result.getInt(2));
                 route.setArrivalId(result.getInt(3));
+                route.setAirplanes(routeAirplanesList);
+
+                String routeSql = "SELECT airplane.id, airplane.name, airplane.aircompany_id " +
+                        "FROM airplane inner join airplane_route " +
+                        "on airplane_route.airplane_id = airplane.id " +
+                        "WHERE routes_id=" + result.getInt(1);
+                PreparedStatement routeStatement = connection.prepareStatement(routeSql);
+                ResultSet airplaneResult = routeStatement.executeQuery();
+                while (airplaneResult.next()) {
+                    Airplane airplane = new Airplane();
+                    airplane.setId(airplaneResult.getInt(1));
+                    airplane.setName(airplaneResult.getString(2));
+                    airplane.setAircompanyId(airplaneResult.getInt(3));
+                    routeAirplanesList.add(airplane);
+                }
                 return route;
             }
         } catch (SQLException e) {
@@ -108,10 +140,26 @@ public class RouteDaoImpl implements RouteDao {
             statement.setInt(1, departureId);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
+                List<Airplane> routeAirplanesList = new ArrayList<>();
                 Route route = new Route();
                 route.setId(result.getInt(1));
                 route.setDepartureId(result.getInt(2));
                 route.setArrivalId(result.getInt(3));
+                route.setAirplanes(routeAirplanesList);
+
+                String routeSql = "SELECT airplane.id, airplane.name, airplane.aircompany_id " +
+                        "FROM airplane inner join airplane_route " +
+                        "on airplane_route.airplane_id = airplane.id " +
+                        "WHERE routes_id=" + result.getInt(1);
+                PreparedStatement routeStatement = connection.prepareStatement(routeSql);
+                ResultSet airplaneResult = routeStatement.executeQuery();
+                while (airplaneResult.next()) {
+                    Airplane airplane = new Airplane();
+                    airplane.setId(airplaneResult.getInt(1));
+                    airplane.setName(airplaneResult.getString(2));
+                    airplane.setAircompanyId(airplaneResult.getInt(3));
+                    routeAirplanesList.add(airplane);
+                }
                 routes.add(route);
             }
             return routes;
@@ -131,10 +179,26 @@ public class RouteDaoImpl implements RouteDao {
             statement.setInt(1, arrivalId);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
+                List<Airplane> routeAirplanesList = new ArrayList<>();
                 Route route = new Route();
                 route.setId(result.getInt(1));
                 route.setDepartureId(result.getInt(2));
                 route.setArrivalId(result.getInt(3));
+                route.setAirplanes(routeAirplanesList);
+
+                String routeSql = "SELECT airplane.id, airplane.name, airplane.aircompany_id " +
+                        "FROM airplane inner join airplane_route " +
+                        "on airplane_route.airplane_id = airplane.id " +
+                        "WHERE routes_id=" + result.getInt(1);
+                PreparedStatement routeStatement = connection.prepareStatement(routeSql);
+                ResultSet airplaneResult = routeStatement.executeQuery();
+                while (airplaneResult.next()) {
+                    Airplane airplane = new Airplane();
+                    airplane.setId(airplaneResult.getInt(1));
+                    airplane.setName(airplaneResult.getString(2));
+                    airplane.setAircompanyId(airplaneResult.getInt(3));
+                    routeAirplanesList.add(airplane);
+                }
                 routes.add(route);
             }
             return routes;
@@ -147,7 +211,43 @@ public class RouteDaoImpl implements RouteDao {
     @Override
     public List<Route> getByAirplaneId(Airplane airplane) {
         List<Route> routes = new ArrayList<>();
-        String sql = "";
-        return routes;
+        String sql = "SELECT route.id, route.departure_id, route.arrival_id " +
+                "FROM airplane_route " +
+                "inner join route " +
+                "on airplane_route.routes_id = route.id " +
+                "where airplane_id=?";
+
+        try (Connection connection = ConnectionSource.initConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, airplane.getId());
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                List<Airplane> routeAirplanesList = new ArrayList<>();
+                Route route = new Route();
+                route.setId(result.getInt(1));
+                route.setDepartureId(result.getInt(2));
+                route.setArrivalId(result.getInt(3));
+                route.setAirplanes(routeAirplanesList);
+
+                String routeSql = "SELECT airplane.id, airplane.name, airplane.aircompany_id " +
+                        "FROM airplane inner join airplane_route " +
+                        "on airplane_route.airplane_id = airplane.id " +
+                        "WHERE routes_id=" + result.getInt(1);
+                PreparedStatement routeStatement = connection.prepareStatement(routeSql);
+                ResultSet airplaneResult = routeStatement.executeQuery();
+                while (airplaneResult.next()) {
+                    Airplane newAirplane = new Airplane();
+                    newAirplane.setId(airplaneResult.getInt(1));
+                    newAirplane.setName(airplaneResult.getString(2));
+                    newAirplane.setAircompanyId(airplaneResult.getInt(3));
+                    routeAirplanesList.add(newAirplane);
+                }
+                routes.add(route);
+            }
+            return routes;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
