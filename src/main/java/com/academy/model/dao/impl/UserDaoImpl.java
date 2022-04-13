@@ -2,6 +2,7 @@ package com.academy.model.dao.impl;
 
 import com.academy.model.ConnectionSource;
 import com.academy.model.dao.UserDao;
+import com.academy.model.entity.Role;
 import com.academy.model.entity.User;
 
 import java.sql.Connection;
@@ -19,7 +20,7 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, user.getName());
-            statement.setInt(2, user.getRoleId());
+            statement.setInt(2, user.getRole().getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -29,16 +30,22 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
-        String sql = "select * from aircompany_db.user";
+        String sql = "SELECT user.id, user.name, user.role_id, role.name " +
+                "from user " +
+                "inner join role " +
+                "on user.role_id = role.id";
 
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 User user = new User();
+                Role role = new Role();
                 user.setId(result.getInt(1));
                 user.setName(result.getString(2));
-                user.setRoleId(result.getInt(3));
+                role.setId(result.getInt(3));
+                role.setName(result.getString(4));
+                user.setRole(role);
                 users.add(user);
             }
             return users;
@@ -50,17 +57,24 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getById(Integer id) {
-        String sql = "SELECT * FROM aircompany_db.user where id=?";
         User user = new User();
+        String sql = "SELECT user.id, user.name, user.role_id, role.name " +
+                "from user " +
+                "inner join role " +
+                "on user.role_id = role.id " +
+                "where user.id=?";
 
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
+                Role role = new Role();
                 user.setId(result.getInt(1));
                 user.setName(result.getString(2));
-                user.setRoleId(result.getInt(3));
+                role.setId(result.getInt(3));
+                role.setName(result.getString(4));
+                user.setRole(role);
                 return user;
             }
         } catch (SQLException e) {
@@ -98,17 +112,24 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getByName(String name) {
-        String sql = "SELECT * FROM aircompany_db.user where name=?";
         User user = new User();
+        String sql = "SELECT user.id, user.name, user.role_id, role.name " +
+                "from user " +
+                "inner join role " +
+                "on user.role_id = role.id " +
+                "where user.name=?";
 
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, name);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
+                Role role = new Role();
                 user.setId(result.getInt(1));
                 user.setName(result.getString(2));
-                user.setRoleId(result.getInt(3));
+                role.setId(result.getInt(3));
+                role.setName(result.getString(4));
+                user.setRole(role);
                 return user;
             }
         } catch (SQLException e) {

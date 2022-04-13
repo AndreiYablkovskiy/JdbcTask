@@ -5,7 +5,7 @@ import java.util.List;
 public class Airplane {
     private Integer id;
     private String name;
-    private Integer aircompanyId;
+    private Aircompany aircompany;
     private List<Route> routes;
 
     public Integer getId() {
@@ -24,12 +24,12 @@ public class Airplane {
         this.name = name;
     }
 
-    public Integer getAircompanyId() {
-        return aircompanyId;
+    public Aircompany getAircompany() {
+        return aircompany;
     }
 
-    public void setAircompanyId(Integer aircompanyId) {
-        this.aircompanyId = aircompanyId;
+    public void setAircompany(Aircompany aircompany) {
+        this.aircompany = aircompany;
     }
 
     public List<Route> getRoutes() {

@@ -6,7 +6,7 @@ public class Order {
     private Integer id;
     private Integer number;
     private Date orderDate;
-    private Integer userId;
+    private User user;
 
     public Integer getId() {
         return id;
@@ -32,11 +32,11 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Integer usersId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

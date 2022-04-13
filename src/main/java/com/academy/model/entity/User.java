@@ -3,7 +3,7 @@ package com.academy.model.entity;
 public class User {
     private Integer id;
     private String name;
-    private Integer roleId;
+    private Role role;
 
     public Integer getId() {
         return id;
@@ -21,12 +21,12 @@ public class User {
         this.name = name;
     }
 
-    public Integer getRoleId() {
-        return roleId;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
 }

@@ -2,9 +2,7 @@ package com.academy.model.dao.impl;
 
 import com.academy.model.ConnectionSource;
 import com.academy.model.dao.TicketDao;
-import com.academy.model.entity.Order;
-import com.academy.model.entity.Route;
-import com.academy.model.entity.Ticket;
+import com.academy.model.entity.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,8 +18,8 @@ public class TicketDaoImpl implements TicketDao {
 
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, ticket.getRouteId());
-            statement.setInt(2, ticket.getOrderId());
+            statement.setInt(1, ticket.getRoute().getId());
+            statement.setInt(2, ticket.getOrder().getId());
             statement.setString(3, ticket.getPassportData());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -32,17 +30,42 @@ public class TicketDaoImpl implements TicketDao {
     @Override
     public List<Ticket> getAll() {
         List<Ticket> tickets = new ArrayList<>();
-        String sql = "select * from aircompany_db.ticket";
+        String sql = "SELECT * " +
+                "FROM aircompany_db.ticket " +
+                "inner join route " +
+                "on ticket.route_id = route.id " +
+                "inner join aircompany_db.order " +
+                "on ticket.order_id = order.id " +
+                "inner join user " +
+                "on order.user_id = user.id " +
+                "inner join role " +
+                "on user.role_id = role.id";
 
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 Ticket ticket = new Ticket();
-                ticket.setId(result.getInt(1));
-                ticket.setRouteId(result.getInt(2));
-                ticket.setOrderId(result.getInt(3));
-                ticket.setPassportData(result.getString(4));
+                Route route = new Route();
+                Order order = new Order();
+                User user = new User();
+                Role role = new Role();
+                ticket.setId(result.getInt("id"));
+                ticket.setPassportData(result.getString("passport_data"));
+                route.setId(result.getInt("route_id"));
+                route.setDepartureId(result.getInt("departure_id"));
+                route.setArrivalId(result.getInt("arrival_id"));
+                order.setId(result.getInt("order_id"));
+                order.setNumber(result.getInt("number"));
+                order.setOrderDate(result.getDate("order_date"));
+                user.setId(result.getInt("user_id"));
+                user.setName(result.getString(13));
+                role.setId(result.getInt("role_id"));
+                role.setName(result.getString(16));
+                user.setRole(role);
+                order.setUser(user);
+                ticket.setRoute(route);
+                ticket.setOrder(order);
                 tickets.add(ticket);
             }
             return tickets;
@@ -54,18 +77,44 @@ public class TicketDaoImpl implements TicketDao {
 
     @Override
     public Ticket getById(Integer id) {
-        String sql = "SELECT * FROM aircompany_db.ticket where id=?";
         Ticket ticket = new Ticket();
+        String sql = "SELECT * " +
+                "FROM aircompany_db.ticket " +
+                "inner join route " +
+                "on ticket.route_id = route.id " +
+                "inner join aircompany_db.order " +
+                "on ticket.order_id = order.id " +
+                "inner join user " +
+                "on order.user_id = user.id " +
+                "inner join role " +
+                "on user.role_id = role.id " +
+                "where ticket.id=?";
 
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                ticket.setId(result.getInt(1));
-                ticket.setRouteId(result.getInt(2));
-                ticket.setOrderId(result.getInt(3));
-                ticket.setPassportData(result.getString(4));
+                Route route = new Route();
+                Order order = new Order();
+                User user = new User();
+                Role role = new Role();
+                ticket.setId(result.getInt("id"));
+                ticket.setPassportData(result.getString("passport_data"));
+                route.setId(result.getInt("route_id"));
+                route.setDepartureId(result.getInt("departure_id"));
+                route.setArrivalId(result.getInt("arrival_id"));
+                order.setId(result.getInt("order_id"));
+                order.setNumber(result.getInt("number"));
+                order.setOrderDate(result.getDate("order_date"));
+                user.setId(result.getInt("user_id"));
+                user.setName(result.getString(13));
+                role.setId(result.getInt("role_id"));
+                role.setName(result.getString(16));
+                user.setRole(role);
+                order.setUser(user);
+                ticket.setRoute(route);
+                ticket.setOrder(order);
                 return ticket;
             }
         } catch (SQLException e) {
@@ -104,21 +153,47 @@ public class TicketDaoImpl implements TicketDao {
     @Override
     public List<Ticket> getByPassportData(String passportData) {
         List<Ticket> tickets = new ArrayList<>();
-        String sql = "SELECT * FROM aircompany_db.ticket where passport_data=?";
+        String sql = "SELECT * " +
+                "FROM aircompany_db.ticket " +
+                "inner join route " +
+                "on ticket.route_id = route.id " +
+                "inner join aircompany_db.order " +
+                "on ticket.order_id = order.id " +
+                "inner join user " +
+                "on order.user_id = user.id " +
+                "inner join role " +
+                "on user.role_id = role.id " +
+                "where ticket.passport_data=?";
 
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, passportData);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                Ticket newTicket = new Ticket();
-                newTicket.setId(result.getInt(1));
-                newTicket.setRouteId(result.getInt(2));
-                newTicket.setOrderId(result.getInt(3));
-                newTicket.setPassportData(result.getString(4));
-                tickets.add(newTicket);
-                return tickets;
+                Ticket ticket = new Ticket();
+                Route route = new Route();
+                Order order = new Order();
+                User user = new User();
+                Role role = new Role();
+                ticket.setId(result.getInt("id"));
+                ticket.setPassportData(result.getString("passport_data"));
+                route.setId(result.getInt("route_id"));
+                route.setDepartureId(result.getInt("departure_id"));
+                route.setArrivalId(result.getInt("arrival_id"));
+                order.setId(result.getInt("order_id"));
+                order.setNumber(result.getInt("number"));
+                order.setOrderDate(result.getDate("order_date"));
+                user.setId(result.getInt("user_id"));
+                user.setName(result.getString(13));
+                role.setId(result.getInt("role_id"));
+                role.setName(result.getString(16));
+                user.setRole(role);
+                order.setUser(user);
+                ticket.setRoute(route);
+                ticket.setOrder(order);
+                tickets.add(ticket);
             }
+            return tickets;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -126,23 +201,49 @@ public class TicketDaoImpl implements TicketDao {
     }
 
     @Override
-    public List<Ticket> getByRouteId(Route route) {
+    public List<Ticket> getByRouteId(Route someRoute) {
         List<Ticket> tickets = new ArrayList<>();
-        String sql = "SELECT * FROM aircompany_db.ticket where route_id=?";
+        String sql = "SELECT * " +
+                "FROM aircompany_db.ticket " +
+                "inner join route " +
+                "on ticket.route_id = route.id " +
+                "inner join aircompany_db.order " +
+                "on ticket.order_id = order.id " +
+                "inner join user " +
+                "on order.user_id = user.id " +
+                "inner join role " +
+                "on user.role_id = role.id " +
+                "where route.id=?";
 
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, route.getId());
+            statement.setInt(1, someRoute.getId());
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                Ticket newTicket = new Ticket();
-                newTicket.setId(result.getInt(1));
-                newTicket.setRouteId(result.getInt(2));
-                newTicket.setOrderId(result.getInt(3));
-                newTicket.setPassportData(result.getString(4));
-                tickets.add(newTicket);
-                return tickets;
+                Ticket ticket = new Ticket();
+                Route route = new Route();
+                Order order = new Order();
+                User user = new User();
+                Role role = new Role();
+                ticket.setId(result.getInt("id"));
+                ticket.setPassportData(result.getString("passport_data"));
+                route.setId(result.getInt("route_id"));
+                route.setDepartureId(result.getInt("departure_id"));
+                route.setArrivalId(result.getInt("arrival_id"));
+                order.setId(result.getInt("order_id"));
+                order.setNumber(result.getInt("number"));
+                order.setOrderDate(result.getDate("order_date"));
+                user.setId(result.getInt("user_id"));
+                user.setName(result.getString(13));
+                role.setId(result.getInt("role_id"));
+                role.setName(result.getString(16));
+                user.setRole(role);
+                order.setUser(user);
+                ticket.setRoute(route);
+                ticket.setOrder(order);
+                tickets.add(ticket);
             }
+            return tickets;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -150,20 +251,36 @@ public class TicketDaoImpl implements TicketDao {
     }
 
     @Override
-    public Ticket getByOrderId(Order order) {
-        Ticket newTicket = new Ticket();
+    public Ticket getByOrderId(Order someOrder) {
+        Ticket ticket = new Ticket();
         String sql = "SELECT * FROM aircompany_db.ticket where order_id=?";
 
         try (Connection connection = ConnectionSource.initConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, order.getId());
+            statement.setInt(1, someOrder.getId());
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                newTicket.setId(result.getInt(1));
-                newTicket.setRouteId(result.getInt(2));
-                newTicket.setOrderId(result.getInt(3));
-                newTicket.setPassportData(result.getString(4));
-                return newTicket;
+                Route route = new Route();
+                Order order = new Order();
+                User user = new User();
+                Role role = new Role();
+                ticket.setId(result.getInt("id"));
+                ticket.setPassportData(result.getString("passport_data"));
+                route.setId(result.getInt("route_id"));
+                route.setDepartureId(result.getInt("departure_id"));
+                route.setArrivalId(result.getInt("arrival_id"));
+                order.setId(result.getInt("order_id"));
+                order.setNumber(result.getInt("number"));
+                order.setOrderDate(result.getDate("order_date"));
+                user.setId(result.getInt("user_id"));
+                user.setName(result.getString(13));
+                role.setId(result.getInt("role_id"));
+                role.setName(result.getString(16));
+                user.setRole(role);
+                order.setUser(user);
+                ticket.setRoute(route);
+                ticket.setOrder(order);
+                return ticket;
             }
         } catch (SQLException e) {
             e.printStackTrace();

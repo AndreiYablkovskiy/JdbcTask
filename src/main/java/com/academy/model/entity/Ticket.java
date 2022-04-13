@@ -2,8 +2,8 @@ package com.academy.model.entity;
 
 public class Ticket {
     private Integer id;
-    private Integer routeId;
-    private Integer orderId;
+    private Route route;
+    private Order order;
     private String passportData;
 
     public Integer getId() {
@@ -14,20 +14,20 @@ public class Ticket {
         this.id = id;
     }
 
-    public Integer getRouteId() {
-        return routeId;
+    public Route getRoute() {
+        return route;
     }
 
-    public void setRouteId(Integer routeId) {
-        this.routeId = routeId;
+    public void setRoute(Route route) {
+        this.route = route;
     }
 
-    public Integer getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public String getPassportData() {
